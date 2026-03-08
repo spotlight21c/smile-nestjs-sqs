@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { type HealthIndicatorResult, HealthIndicatorService } from '@nestjs/terminus';
+import type { HealthIndicatorResult } from '@nestjs/terminus';
 import { SqsRegistry } from './sqs.registry';
 import { SqsService } from './sqs.service';
 import type { QueueName } from './sqs.types';
@@ -11,8 +11,6 @@ export class SqsHealthIndicator {
     private readonly sqsService: SqsService,
     @Inject(SqsRegistry)
     private readonly sqsRegistry: SqsRegistry,
-    @Inject(HealthIndicatorService)
-    private readonly healthIndicatorService: HealthIndicatorService,
   ) {}
 
   public check(key = 'sqs', consumerNames?: QueueName[]): HealthIndicatorResult {
@@ -33,7 +31,11 @@ export class SqsHealthIndicator {
       }
     }
 
-    const check = this.healthIndicatorService.check(key);
-    return isHealthy ? check.up(details) : check.down(details);
+    return {
+      [key]: {
+        status: isHealthy ? 'up' : 'down',
+        ...details,
+      },
+    } as HealthIndicatorResult;
   }
 }
