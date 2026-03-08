@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/spotlight21c/smile-nestjs-sqs/compare/v0.2.0...v0.2.1) (2026-03-08)
+
+
+### Bug Fixes
+
+* setup node v24 to publish ([27b8eef](https://github.com/spotlight21c/smile-nestjs-sqs/commit/27b8eef7b3adfed6ec460f70338740176ab4b694))
+
 ## [0.2.0](https://github.com/spotlight21c/smile-nestjs-sqs/compare/v0.1.2...v0.2.0) (2026-03-08)
 
 
