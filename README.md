@@ -300,17 +300,6 @@ export class HealthController {
 - `isPolling=false` alone is not treated as unhealthy.
 - Check specific consumers by passing names to `sqs.check('sqs', ['orders'])`.
 
-## GitHub Workflows
-
-This repository includes:
-
-- `CI` workflow (`.github/workflows/ci.yml`): lint/build/unit/e2e test on push/PR
-- `Publish` workflow (`.github/workflows/publish.yml`): validate (lint/build/unit/e2e test) then publish on release
-
-To publish from GitHub Actions, add repository secret:
-
-- `NPM_TOKEN`: npm automation token with publish permission
-
 ## License
 
 MIT
