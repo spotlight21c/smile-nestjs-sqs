@@ -1,8 +1,13 @@
-name: Publish
+name: Release
 
 on:
-  release:
-    types: [published]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: release-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -65,16 +70,39 @@ jobs:
           AWS_SECRET_ACCESS_KEY: test
         run: pnpm test:e2e
 
-  publish:
+  release-please:
+    name: Release Please
     runs-on: ubuntu-latest
     needs: validate
+    permissions:
+      contents: write
+      pull-requests: write
+    outputs:
+      release_created: ${{ steps.release_please.outputs.release_created }}
+      releases_created: ${{ steps.release_please.outputs.releases_created }}
+
+    steps:
+      - name: Run release-please action
+        id: release_please
+        uses: googleapis/release-please-action@v4
+        with:
+          command: manifest
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    needs: release-please
+    if: ${{ needs.release-please.outputs.releases_created == 'true' || needs.release-please.outputs.release_created == 'true' }}
     environment: npm
     permissions:
       contents: read
       id-token: write
 
     steps:
-      - name: Checkout
+      - name: Checkout release commit
         uses: actions/checkout@v4
 
       - name: Setup pnpm
@@ -85,7 +113,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 24.x
+          node-version: 20.x
           cache: pnpm
           registry-url: https://registry.npmjs.org
 

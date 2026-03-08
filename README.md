@@ -71,7 +71,7 @@ import { SqsConsumerEventHandler, SqsMessageHandler } from 'smile-nestjs-sqs';
 @Injectable()
 export class OrderQueueHandler {
   @SqsMessageHandler('orders')
-  public async onMessage(message: Message): Promise<Message | undefined> {
+  public async onMessage(message: Message): Promise<Message> {
     // return message to ack/delete
     return message;
   }
@@ -87,7 +87,7 @@ Batch consumer:
 
 ```ts
 @SqsMessageHandler('orders', { batch: true })
-public async onBatch(messages: Message[]): Promise<Message[] | undefined> {
+public async onBatch(messages: Message[]): Promise<Message[]> {
   return messages;
 }
 ```
