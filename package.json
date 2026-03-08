@@ -3,6 +3,14 @@
   "version": "0.1.1",
   "description": "NestJS module for AWS SQS built on bbc/sqs-consumer and bbc/sqs-producer",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/spotlight21c/smile-nestjs-sqs"
+  },
+  "homepage": "https://github.com/spotlight21c/smile-nestjs-sqs#readme",
+  "bugs": {
+    "url": "https://github.com/spotlight21c/smile-nestjs-sqs/issues"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
