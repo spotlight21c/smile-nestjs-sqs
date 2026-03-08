@@ -1,6 +1,6 @@
 {
   "name": "smile-nestjs-sqs",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "NestJS module for AWS SQS built on bbc/sqs-consumer and bbc/sqs-producer",
   "license": "MIT",
   "main": "dist/index.js",
