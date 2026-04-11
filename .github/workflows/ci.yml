@@ -93,7 +93,7 @@ jobs:
       - name: Start LocalStack
         uses: localstack/setup-localstack@v0.2.2
         with:
-          image-tag: 'latest'
+          image-tag: '3'
           install-awslocal: 'true'
 
       - name: E2E test
