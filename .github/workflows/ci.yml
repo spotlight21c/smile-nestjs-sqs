@@ -95,6 +95,8 @@ jobs:
         with:
           image-tag: 'latest'
           install-awslocal: 'true'
+        env:
+          LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
 
       - name: E2E test
         env:
