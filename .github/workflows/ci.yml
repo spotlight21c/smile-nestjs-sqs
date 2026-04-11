@@ -93,8 +93,10 @@ jobs:
       - name: Start LocalStack
         uses: localstack/setup-localstack@v0.2.2
         with:
-          image-tag: '3'
+          image-tag: 'latest'
           install-awslocal: 'true'
+        env:
+          LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
 
       - name: E2E test
         env:
