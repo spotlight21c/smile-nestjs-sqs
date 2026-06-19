@@ -9,7 +9,7 @@ export class SqsRegistry {
 
   public addConsumer(context: SqsConsumerContext): void {
     if (this.consumers.has(context.name)) {
-      throw new SqsConfigurationError(`Consumer \"${context.name}\" is already registered.`);
+      throw new SqsConfigurationError(`Consumer "${context.name}" is already registered.`);
     }
 
     this.consumers.set(context.name, context);
@@ -17,7 +17,7 @@ export class SqsRegistry {
 
   public addProducer(context: SqsProducerContext): void {
     if (this.producers.has(context.name)) {
-      throw new SqsConfigurationError(`Producer \"${context.name}\" is already registered.`);
+      throw new SqsConfigurationError(`Producer "${context.name}" is already registered.`);
     }
 
     this.producers.set(context.name, context);
@@ -26,7 +26,7 @@ export class SqsRegistry {
   public getConsumer(name: QueueName): SqsConsumerContext {
     const context = this.consumers.get(name);
     if (!context) {
-      throw new SqsNotFoundError(`Consumer \"${name}\" was not found.`);
+      throw new SqsNotFoundError(`Consumer "${name}" was not found.`);
     }
 
     return context;
@@ -35,7 +35,7 @@ export class SqsRegistry {
   public getProducer(name: QueueName): SqsProducerContext {
     const context = this.producers.get(name);
     if (!context) {
-      throw new SqsNotFoundError(`Producer \"${name}\" was not found.`);
+      throw new SqsNotFoundError(`Producer "${name}" was not found.`);
     }
 
     return context;

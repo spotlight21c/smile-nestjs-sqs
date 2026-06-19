@@ -1,8 +1,7 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "files": {
-    "include": ["lib/**/*.ts", "test/**/*.ts", "*.ts"],
-    "ignore": ["dist/**"]
+    "includes": ["**/lib/**/*.ts", "**/test/**/*.ts", "**/*.ts", "!**/dist"]
   },
   "formatter": {
     "enabled": true,
@@ -10,13 +9,11 @@
     "indentStyle": "space",
     "lineEnding": "lf"
   },
-  "organizeImports": {
-    "enabled": true
-  },
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true,
+      "preset": "recommended",
       "complexity": {
         "noStaticOnlyClass": "off"
       }

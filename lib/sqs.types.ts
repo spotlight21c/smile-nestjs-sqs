@@ -1,4 +1,4 @@
-import type { QueueAttributeName, SQSClient, SendMessageBatchResultEntry } from '@aws-sdk/client-sqs';
+import type { QueueAttributeName, SendMessageBatchResultEntry, SQSClient } from '@aws-sdk/client-sqs';
 import type { LoggerService, ModuleMetadata, Type } from '@nestjs/common';
 import type { Consumer, Events as ConsumerEvents, ConsumerOptions, StopOptions, UpdatableOptions } from 'sqs-consumer';
 import type { Producer, Message as ProducerMessage, ProducerOptions } from 'sqs-producer';
