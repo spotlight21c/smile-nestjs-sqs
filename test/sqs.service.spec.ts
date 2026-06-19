@@ -1,8 +1,7 @@
 import 'reflect-metadata';
 
 import { EventEmitter } from 'node:events';
-import type { Message } from '@aws-sdk/client-sqs';
-import type { SQSClient } from '@aws-sdk/client-sqs';
+import type { Message, SQSClient } from '@aws-sdk/client-sqs';
 import { Injectable } from '@nestjs/common';
 import { Test, type TestingModule } from '@nestjs/testing';
 import { afterEach, describe, expect, it, vi } from 'vitest';

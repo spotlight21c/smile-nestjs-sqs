@@ -152,12 +152,12 @@ export class SqsService implements OnApplicationBootstrap, OnModuleDestroy {
   ): void {
     for (const options of this.options.consumers ?? []) {
       if (this.registry.findConsumer(options.name)) {
-        throw new SqsConfigurationError(`Consumer \"${options.name}\" is already registered.`);
+        throw new SqsConfigurationError(`Consumer "${options.name}" is already registered.`);
       }
 
       const messageHandler = messageHandlersByName.get(options.name);
       if (!messageHandler) {
-        throw new SqsConfigurationError(`No @SqsMessageHandler was found for consumer \"${options.name}\".`);
+        throw new SqsConfigurationError(`No @SqsMessageHandler was found for consumer "${options.name}".`);
       }
 
       this.validateMessageHandlerContract(options.name, messageHandler);
@@ -192,7 +192,7 @@ export class SqsService implements OnApplicationBootstrap, OnModuleDestroy {
   private registerProducers(): void {
     for (const options of this.options.producers ?? []) {
       if (this.registry.findProducer(options.name)) {
-        throw new SqsConfigurationError(`Producer \"${options.name}\" is already registered.`);
+        throw new SqsConfigurationError(`Producer "${options.name}" is already registered.`);
       }
 
       const sqs = this.resolveProducerClient(options);
@@ -205,7 +205,7 @@ export class SqsService implements OnApplicationBootstrap, OnModuleDestroy {
       const existingConsumer = this.registry.findConsumer(options.name);
       if (existingConsumer && existingConsumer.queueUrl !== options.queueUrl) {
         throw new SqsConfigurationError(
-          `Queue name \"${options.name}\" is configured for both consumer and producer with different queueUrl values.`,
+          `Queue name "${options.name}" is configured for both consumer and producer with different queueUrl values.`,
         );
       }
 
@@ -255,7 +255,7 @@ export class SqsService implements OnApplicationBootstrap, OnModuleDestroy {
 
       context.instance.once('stopped', handleStopped);
       const timeout = setTimeout(() => {
-        this.logger.warn(`Timed out while waiting consumer \"${context.name}\" to stop.`);
+        this.logger.warn(`Timed out while waiting consumer "${context.name}" to stop.`);
         cleanup();
       }, waitTimeoutMs);
 
@@ -270,7 +270,7 @@ export class SqsService implements OnApplicationBootstrap, OnModuleDestroy {
       if (byName.has(handler.metadata.name)) {
         const existing = byName.get(handler.metadata.name);
         throw new SqsConfigurationError(
-          `Multiple @SqsMessageHandler methods found for queue \"${handler.metadata.name}\" (${existing?.methodName}, ${handler.methodName}).`,
+          `Multiple @SqsMessageHandler methods found for queue "${handler.metadata.name}" (${existing?.methodName}, ${handler.methodName}).`,
         );
       }
 
@@ -303,16 +303,14 @@ export class SqsService implements OnApplicationBootstrap, OnModuleDestroy {
 
     for (const queueName of messageHandlersByName.keys()) {
       if (!configuredConsumerNames.has(queueName)) {
-        this.logger.warn(
-          `@SqsMessageHandler exists for queue \"${queueName}\" but no matching consumer is configured.`,
-        );
+        this.logger.warn(`@SqsMessageHandler exists for queue "${queueName}" but no matching consumer is configured.`);
       }
     }
 
     for (const queueName of eventHandlersByName.keys()) {
       if (!configuredConsumerNames.has(queueName)) {
         throw new SqsConfigurationError(
-          `@SqsConsumerEventHandler exists for queue \"${queueName}\" but no matching consumer is configured.`,
+          `@SqsConsumerEventHandler exists for queue "${queueName}" but no matching consumer is configured.`,
         );
       }
     }
@@ -322,7 +320,7 @@ export class SqsService implements OnApplicationBootstrap, OnModuleDestroy {
     for (const eventHandler of eventHandlers) {
       if (!SQS_CONSUMER_EVENT_NAME_SET.has(eventHandler.metadata.eventName)) {
         throw new SqsConfigurationError(
-          `Unsupported SQS consumer event \"${eventHandler.metadata.eventName}\" for queue \"${name}\".`,
+          `Unsupported SQS consumer event "${eventHandler.metadata.eventName}" for queue "${name}".`,
         );
       }
     }
@@ -389,13 +387,13 @@ export class SqsService implements OnApplicationBootstrap, OnModuleDestroy {
 
     if (messageHandler.metadata.batch && firstParameterType && firstParameterType !== Array) {
       throw new SqsConfigurationError(
-        `@SqsMessageHandler(\"${name}\", { batch: true }) method \"${messageHandler.methodName}\" must declare its first parameter as an array type.`,
+        `@SqsMessageHandler("${name}", { batch: true }) method "${messageHandler.methodName}" must declare its first parameter as an array type.`,
       );
     }
 
     if (!messageHandler.metadata.batch && firstParameterType === Array) {
       throw new SqsConfigurationError(
-        `@SqsMessageHandler(\"${name}\") method \"${messageHandler.methodName}\" must not declare its first parameter as an array type.`,
+        `@SqsMessageHandler("${name}") method "${messageHandler.methodName}" must not declare its first parameter as an array type.`,
       );
     }
   }
@@ -407,7 +405,7 @@ export class SqsService implements OnApplicationBootstrap, OnModuleDestroy {
 
     if (Array.isArray(result) || typeof result !== 'object') {
       throw new SqsConfigurationError(
-        `@SqsMessageHandler(\"${name}\") method \"${methodName}\" returned an invalid value. Expected a message-like object, undefined, or null.`,
+        `@SqsMessageHandler("${name}") method "${methodName}" returned an invalid value. Expected a message-like object, undefined, or null.`,
       );
     }
   }
@@ -419,14 +417,14 @@ export class SqsService implements OnApplicationBootstrap, OnModuleDestroy {
 
     if (!Array.isArray(result)) {
       throw new SqsConfigurationError(
-        `@SqsMessageHandler(\"${name}\", { batch: true }) method \"${methodName}\" returned an invalid value. Expected Message[], undefined, or null.`,
+        `@SqsMessageHandler("${name}", { batch: true }) method "${methodName}" returned an invalid value. Expected Message[], undefined, or null.`,
       );
     }
 
     const hasInvalidItem = result.some((message) => !message || typeof message !== 'object' || Array.isArray(message));
     if (hasInvalidItem) {
       throw new SqsConfigurationError(
-        `@SqsMessageHandler(\"${name}\", { batch: true }) method \"${methodName}\" must return an array of message-like objects.`,
+        `@SqsMessageHandler("${name}", { batch: true }) method "${methodName}" must return an array of message-like objects.`,
       );
     }
   }
@@ -478,7 +476,7 @@ export class SqsService implements OnApplicationBootstrap, OnModuleDestroy {
       };
     }
 
-    throw new SqsNotFoundError(`Consumer/producer \"${name}\" was not found.`);
+    throw new SqsNotFoundError(`Consumer/producer "${name}" was not found.`);
   }
 
   private serializeBody(name: QueueName, body: unknown): string {
@@ -487,14 +485,14 @@ export class SqsService implements OnApplicationBootstrap, OnModuleDestroy {
     }
 
     if (body === undefined) {
-      throw new SqsSerializationError(`Message body for queue \"${name}\" cannot be undefined.`);
+      throw new SqsSerializationError(`Message body for queue "${name}" cannot be undefined.`);
     }
 
     const serializer = this.options.bodySerializer;
     const serialized = serializer ? serializer(body, { queueName: name }) : JSON.stringify(body);
 
     if (typeof serialized !== 'string') {
-      throw new SqsSerializationError(`Message body serializer must return a string for queue \"${name}\".`);
+      throw new SqsSerializationError(`Message body serializer must return a string for queue "${name}".`);
     }
 
     return serialized;
