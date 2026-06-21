@@ -9,7 +9,7 @@ This package provides a decorator-first API, strict boot-time validation, and ru
 
 ## Compatibility
 
-- Node.js `>=20`
+- Node.js `>=22`
 - NestJS `^10 || ^11`
 
 ## Highlights
@@ -25,9 +25,7 @@ This package provides a decorator-first API, strict boot-time validation, and ru
 ## Installation
 
 ```bash
-pnpm add @aws-sdk/client-sqs sqs-consumer sqs-producer
-pnpm add @nestjs/common @nestjs/core
-pnpm add smile-nestjs-sqs
+pnpm add @aws-sdk/client-sqs smile-nestjs-sqs
 # optional: Terminus integration
 pnpm add @nestjs/terminus
 ```
@@ -35,24 +33,26 @@ pnpm add @nestjs/terminus
 ## Quick Start
 
 ```ts
-import { Module } from '@nestjs/common';
-import { SqsModule } from 'smile-nestjs-sqs';
+import { Module } from "@nestjs/common";
+import { SqsModule } from "smile-nestjs-sqs";
 
 @Module({
   imports: [
     SqsModule.register({
       consumers: [
         {
-          name: 'orders',
-          queueUrl: 'https://sqs.ap-northeast-2.amazonaws.com/123456789012/orders.fifo',
-          region: 'ap-northeast-2',
+          name: "orders",
+          queueUrl:
+            "https://sqs.ap-northeast-2.amazonaws.com/123456789012/orders.fifo",
+          region: "ap-northeast-2",
         },
       ],
       producers: [
         {
-          name: 'orders',
-          queueUrl: 'https://sqs.ap-northeast-2.amazonaws.com/123456789012/orders.fifo',
-          region: 'ap-northeast-2',
+          name: "orders",
+          queueUrl:
+            "https://sqs.ap-northeast-2.amazonaws.com/123456789012/orders.fifo",
+          region: "ap-northeast-2",
         },
       ],
     }),
@@ -64,19 +64,19 @@ export class AppModule {}
 ## Consumers
 
 ```ts
-import { Injectable } from '@nestjs/common';
-import { Message } from '@aws-sdk/client-sqs';
-import { SqsConsumerEventHandler, SqsMessageHandler } from 'smile-nestjs-sqs';
+import { Injectable } from "@nestjs/common";
+import { Message } from "@aws-sdk/client-sqs";
+import { SqsConsumerEventHandler, SqsMessageHandler } from "smile-nestjs-sqs";
 
 @Injectable()
 export class OrderQueueHandler {
-  @SqsMessageHandler('orders')
+  @SqsMessageHandler("orders")
   public async onMessage(message: Message): Promise<Message> {
     // return message to ack/delete
     return message;
   }
 
-  @SqsConsumerEventHandler('orders', 'processing_error')
+  @SqsConsumerEventHandler("orders", "processing_error")
   public onProcessingError(error: Error, message: Message) {
     // report error
   }
@@ -114,19 +114,19 @@ Contract validation behavior:
 ## Producers
 
 ```ts
-import { Injectable } from '@nestjs/common';
-import { SqsService } from 'smile-nestjs-sqs';
+import { Injectable } from "@nestjs/common";
+import { SqsService } from "smile-nestjs-sqs";
 
 @Injectable()
 export class OrderPublisher {
   public constructor(private readonly sqsService: SqsService) {}
 
   public async publishOrderCreated() {
-    await this.sqsService.send('orders', {
-      id: 'msg-1',
-      body: { type: 'order.created', orderId: 'o-100' },
-      groupId: 'orders',
-      deduplicationId: 'msg-1',
+    await this.sqsService.send("orders", {
+      id: "msg-1",
+      body: { type: "order.created", orderId: "o-100" },
+      groupId: "orders",
+      deduplicationId: "msg-1",
     });
   }
 }
@@ -155,10 +155,10 @@ SqsModule.register({
 ### defaultSqsClient Example (Nest DI style)
 
 ```ts
-import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { SQSClient } from '@aws-sdk/client-sqs';
-import { SqsModule } from 'smile-nestjs-sqs';
+import { Module } from "@nestjs/common";
+import { ConfigModule, ConfigService } from "@nestjs/config";
+import { SQSClient } from "@aws-sdk/client-sqs";
+import { SqsModule } from "smile-nestjs-sqs";
 
 @Module({
   imports: [
@@ -166,14 +166,14 @@ import { SqsModule } from 'smile-nestjs-sqs';
     SqsModule.registerAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
-        const region = config.getOrThrow<string>('AWS_REGION');
-        const queueUrl = config.getOrThrow<string>('ORDERS_QUEUE_URL');
+        const region = config.getOrThrow<string>("AWS_REGION");
+        const queueUrl = config.getOrThrow<string>("ORDERS_QUEUE_URL");
         const defaultSqsClient = new SQSClient({ region });
 
         return {
           defaultSqsClient,
-          consumers: [{ name: 'orders', queueUrl }],
-          producers: [{ name: 'orders', queueUrl }],
+          consumers: [{ name: "orders", queueUrl }],
+          producers: [{ name: "orders", queueUrl }],
         };
       },
     }),
@@ -184,18 +184,18 @@ export class AppModule {}
 
 ### SqsOptions
 
-| Option | Type | Default | Description |
-|---|---|---|---|
-| `consumers` | `SqsConsumerOptions[]` | `[]` | Consumer definitions (`name`, `queueUrl`, consumer options). |
-| `producers` | `SqsProducerOptions[]` | `[]` | Producer definitions (`name`, `queueUrl`, producer options). |
-| `isGlobal` | `boolean` | `true` | Registers `SqsModule` as global module. |
-| `defaultSqsClient` | `SQSClient` | auto-created | Shared fallback SQS client for consumers/producers without `sqs`. |
-| `logger` | `LoggerService` | Nest Logger | Logger used by `SqsService`. |
-| `globalStopOptions` | `StopOptions` | `{}` | Base stop options merged into each consumer stop config. |
-| `includeControllers` | `boolean` | `false` | Includes Nest controllers in decorator discovery scan. Keep `false` unless SQS handlers are intentionally declared in controllers. |
-| `shutdownTimeoutMs` | `number` | `30000` | Timeout while waiting consumer stop during shutdown. |
-| `defaultStrictReturn` | `boolean` | `true` | Default `strictReturn` for consumer creation. |
-| `bodySerializer` | `(body, { queueName }) => string` | `JSON.stringify` | Custom message body serialization hook. Must return a string. |
+| Option                | Type                              | Default          | Description                                                                                                                        |
+| --------------------- | --------------------------------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `consumers`           | `SqsConsumerOptions[]`            | `[]`             | Consumer definitions (`name`, `queueUrl`, consumer options).                                                                       |
+| `producers`           | `SqsProducerOptions[]`            | `[]`             | Producer definitions (`name`, `queueUrl`, producer options).                                                                       |
+| `isGlobal`            | `boolean`                         | `true`           | Registers `SqsModule` as global module.                                                                                            |
+| `defaultSqsClient`    | `SQSClient`                       | auto-created     | Shared fallback SQS client for consumers/producers without `sqs`.                                                                  |
+| `logger`              | `LoggerService`                   | Nest Logger      | Logger used by `SqsService`.                                                                                                       |
+| `globalStopOptions`   | `StopOptions`                     | `{}`             | Base stop options merged into each consumer stop config.                                                                           |
+| `includeControllers`  | `boolean`                         | `false`          | Includes Nest controllers in decorator discovery scan. Keep `false` unless SQS handlers are intentionally declared in controllers. |
+| `shutdownTimeoutMs`   | `number`                          | `30000`          | Timeout while waiting consumer stop during shutdown.                                                                               |
+| `defaultStrictReturn` | `boolean`                         | `true`           | Default `strictReturn` for consumer creation.                                                                                      |
+| `bodySerializer`      | `(body, { queueName }) => string` | `JSON.stringify` | Custom message body serialization hook. Must return a string.                                                                      |
 
 Option notes:
 
@@ -259,17 +259,17 @@ At startup, the module validates:
 `SqsHealthIndicator` is available through the `terminus` subpath export:
 
 ```ts
-import { SqsHealthIndicator } from 'smile-nestjs-sqs/terminus';
+import { SqsHealthIndicator } from "smile-nestjs-sqs/terminus";
 ```
 
 Example usage:
 
 ```ts
-import { Controller, Get } from '@nestjs/common';
-import { HealthCheck, HealthCheckService } from '@nestjs/terminus';
-import { SqsHealthIndicator } from 'smile-nestjs-sqs/terminus';
+import { Controller, Get } from "@nestjs/common";
+import { HealthCheck, HealthCheckService } from "@nestjs/terminus";
+import { SqsHealthIndicator } from "smile-nestjs-sqs/terminus";
 
-@Controller('health')
+@Controller("health")
 export class HealthController {
   public constructor(
     private readonly health: HealthCheckService,
@@ -279,7 +279,7 @@ export class HealthController {
   @Get()
   @HealthCheck()
   public check() {
-    return this.health.check([() => this.sqs.check('sqs')]);
+    return this.health.check([() => this.sqs.check("sqs")]);
   }
 }
 ```
