@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0](https://github.com/spotlight21c/smile-nestjs-sqs/compare/v0.2.1...v0.3.0) (2026-06-22)
+
+
+### Features
+
+* Update release-please action to version 5 ([e6d605d](https://github.com/spotlight21c/smile-nestjs-sqs/commit/e6d605dc5810f75c3449eae96e7fe9e6da56efbd))
+
 ## [0.2.1](https://github.com/spotlight21c/smile-nestjs-sqs/compare/v0.2.0...v0.2.1) (2026-03-08)
 
 
