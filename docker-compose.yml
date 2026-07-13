@@ -1,0 +1,38 @@
+services:
+  floci:
+    image: floci/floci:latest
+    ports:
+      - '4566:4566'
+    environment:
+      FLOCI_HOSTNAME: floci
+      FLOCI_STORAGE_MODE: memory
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:4566/_localstack/health']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  e2e:
+    profiles: ['test']
+    image: node:${NODE_VERSION:-24}-bookworm
+    working_dir: /workspace
+    depends_on:
+      floci:
+        condition: service_healthy
+    environment:
+      SQS_ENDPOINT: http://floci:4566
+      AWS_REGION: us-east-1
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      COREPACK_HOME: /tmp/corepack
+      PNPM_STORE_DIR: /pnpm/store
+    volumes:
+      - .:/workspace
+      - node_modules:/workspace/node_modules
+      - pnpm-store:/pnpm/store
+    command: >
+      sh -c 'corepack enable && pnpm install --frozen-lockfile && pnpm test:e2e'
+
+volumes:
+  node_modules:
+  pnpm-store:
