@@ -12,6 +12,7 @@ This package provides a decorator-first API, strict boot-time validation, and ru
 - Node.js `>=22`
 - NestJS `^10 || ^11`
 
+
 ## Highlights
 
 - Graceful shutdown: stops all consumers during `onModuleDestroy`, recommends configuring `pollingCompleteWaitTimeMs`, and waits for each consumer `stopped` event before completing shutdown.
@@ -284,15 +285,35 @@ export class HealthController {
 }
 ```
 
-## E2E Execution Notes
+## Local E2E Environment
+
+Local E2E tests use [Floci](https://github.com/floci-io/floci) as an SQS-compatible AWS emulator at port `4566`.
 
 - `pnpm test:e2e` always executes e2e tests.
-- Default endpoint is `http://127.0.0.1:4566` (LocalStack SQS).
-- Required env vars for local run:
+- Required env vars for a local run outside of Docker:
   - `SQS_ENDPOINT=http://127.0.0.1:4566`
   - `AWS_REGION=us-east-1`
   - `AWS_ACCESS_KEY_ID=test`
   - `AWS_SECRET_ACCESS_KEY=test`
+
+```bash
+docker compose up -d floci
+pnpm test:e2e
+```
+
+Or run the E2E test in a Node container (Node 24 by default):
+
+```bash
+docker compose --profile test run --rm e2e
+```
+
+Set `NODE_VERSION` to run the container with another CI-supported Node version:
+
+```bash
+NODE_VERSION=22 docker compose --profile test run --rm e2e
+```
+
+Stop the local environment with `docker compose down`.
 
 ## Health Check Notes
 
