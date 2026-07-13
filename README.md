@@ -12,7 +12,6 @@ This package provides a decorator-first API, strict boot-time validation, and ru
 - Node.js `>=22`
 - NestJS `^10 || ^11`
 
-
 ## Highlights
 
 - Graceful shutdown: stops all consumers during `onModuleDestroy`, recommends configuring `pollingCompleteWaitTimeMs`, and waits for each consumer `stopped` event before completing shutdown.
